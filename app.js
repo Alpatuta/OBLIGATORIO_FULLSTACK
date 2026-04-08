@@ -2,9 +2,12 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import v1Router from "./V1/index.js";
+import { connectDB } from "./V1/config/db.js";
 import { notFoundMiddleware } from "./v1/middlewares/notFound.middleware.js";
 
 dotenv.config();
+
+connectDB();
 
 const app = express();
 
