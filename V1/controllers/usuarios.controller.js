@@ -5,7 +5,7 @@ import { cambiarPlanUsuarioService } from "../services/usuarios.services.js";
 export const cambiarPlanUsuario = async (req, res) => {
 
     try {
-        const username = req.body.nombre;
+        const username = req.user.nombre;
         const usuarioActualizado = await cambiarPlanUsuarioService(username);
         res.status(200).json({ message: "Plan cambiado a premium exitosamente", usuario: usuarioActualizado });
     } catch (error) {
