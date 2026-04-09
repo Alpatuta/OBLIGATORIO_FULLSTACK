@@ -11,7 +11,7 @@ export const crearRecetaService = async (recetaData, autor) => {
 
     if (usuario.plan === "plus") {
         const cantidad = await Receta.countDocuments({ autor });
-        if (cantidad > 4) {
+        if (cantidad >= 4) {
             throw new Error("Límite de recetas alcanzado para el plan plus");
         }
     }
