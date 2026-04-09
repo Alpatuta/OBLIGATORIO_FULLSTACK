@@ -47,5 +47,5 @@ export const actualizarRecetaService = async (id, recetaData, autor) => {
 };
 
 export const eliminarRecetaService = async (id, autor) => {
-            const receta = await Receta.findById(id);
+            const receta = await Receta.findByIdAndDelete(id);
 };
