@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const usuarioSchema = new mongoose.Schema({
     nombre: { type: String, required: true, unique: true },
-    contraseña: { type: String, required: true },
+    contrasenia: { type: String, required: true },
     plan: { type: String, enum: ['plus', 'premium'], default: 'plus' },
     fechaCreacion: { type: Date, default: Date.now },
 });

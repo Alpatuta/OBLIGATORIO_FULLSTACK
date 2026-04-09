@@ -8,7 +8,7 @@ export const registerSchema = joi.object({
         'string.max': 'El nombre no puede tener más de 100 caracteres',
         'any.required': 'El nombre es obligatorio',
     }),
-    contraseña: joi.string().min(6).max(100).pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).required().messages({
+    contrasenia: joi.string().min(6).max(100).pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).required().messages({
         'string.base': 'La contraseña debe ser una cadena de texto',
         'string.empty': 'La contraseña no puede estar vacía',
         'string.min': 'La contraseña debe tener al menos 6 caracteres',
@@ -20,7 +20,7 @@ export const registerSchema = joi.object({
         'any.only': 'El plan debe ser "plus" o "premium"',
         'any.default': 'El plan por defecto es "plus"',
     }),
-    confirmarContraseña: joi.string().valid(joi.ref('contraseña')).required().messages({
+    confirmarContrasenia: joi.string().valid(joi.ref('contraseña')).required().messages({
         'any.only': 'Las contraseñas deben coincidir',
         'any.required': 'La confirmación de contraseña es obligatoria',
     })
