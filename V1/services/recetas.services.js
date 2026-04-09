@@ -35,7 +35,7 @@ export const obtenerRecetasService = async (query) => {
         .skip((page - 1) * limit) // Calcula el número de documentos a omitir porque sino 
         // siempre va a mostrar las primeras recetas
         .limit(limit); // Limita la cantidad de recetas que se muestran por página ya que sino muestra todas las recetas
-   
+   return recetas;
 }
 
 export const obtenerRecetaPorIdService = async (id) => {
