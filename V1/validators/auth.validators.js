@@ -17,6 +17,7 @@ export const registerSchema = joi.object({
         'any.required': 'La contraseña es obligatoria',
     }),
     plan: joi.string().valid('plus', 'premium').default('plus').messages({
+        'string.empty': 'El plan no puede estar vacío',
         'any.only': 'El plan debe ser "plus" o "premium"',
         'any.default': 'El plan por defecto es "plus"',
     }),
