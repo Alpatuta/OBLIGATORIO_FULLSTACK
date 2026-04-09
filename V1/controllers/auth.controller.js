@@ -24,7 +24,7 @@ export const loginUsuario = async (req, res) => {
     }
 
     //Si la autenticacion es correcta, genero un token con la información del usuario y lo devuelvo al cliente.
-    const token = jwt.sign({ id: usuarioLogueado._id, nombre: usuarioLogueado.nombre, plan: usuarioLogueado.plan },
+    const token = jwt.sign({ nombre: usuarioLogueado.nombre, plan: usuarioLogueado.plan },
         process.env.SECRET_JWT, { expiresIn: "1h" });
     res.status(200).json({ message: "Login exitoso", token });
 }
