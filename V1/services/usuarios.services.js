@@ -21,3 +21,4 @@ export const cambiarPlanUsuarioService = async (nombre) => {
     await usuario.save();
     return usuario;
 }
+

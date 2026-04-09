@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const recetaSchema = new mongoose.Schema({
+    recetaId: { type: String, required: true, unique: true },
     titulo: { type: String, required: true },
     descripcion: { type: String, required: true },
     ingredientes: [{ type: String, required: true }],
