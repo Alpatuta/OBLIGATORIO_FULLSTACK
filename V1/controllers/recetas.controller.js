@@ -8,7 +8,7 @@ import { crearRecetaService,
 
     export const crearReceta = async (req, res) => {
         try {
-            const receta = await crearRecetaService(req.body, req.usuario.nombre);
+            const receta = await crearRecetaService(req.body, req.user.nombre);
             res.status(201).json({ message: "Receta creada exitosamente", receta });
         }catch (error) {
             if (error.message === "Usuario no encontrado") {
@@ -50,7 +50,7 @@ import { crearRecetaService,
 
     export const actualizarReceta = async (req, res) => {
         try {
-            const recetaActualizada = await actualizarRecetaService(req.params.id, req.body, req.usuario.nombre);
+            const recetaActualizada = await actualizarRecetaService(req.params.id, req.body, req.user.nombre);
             if (!recetaActualizada) {
                 return res.status(404).json({ message: "Receta no encontrada" });
             }
@@ -64,7 +64,7 @@ import { crearRecetaService,
 
     export const eliminarReceta = async (req, res) => {
         try {
-            const recetaEliminada = await eliminarRecetaService(req.params.id, req.usuario.nombre);
+            const recetaEliminada = await eliminarRecetaService(req.params.id, req.user.nombre);
             if (!recetaEliminada) {
                 return res.status(404).json({ message: "Receta no encontrada" });
             }
