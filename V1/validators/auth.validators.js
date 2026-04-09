@@ -20,7 +20,7 @@ export const registerSchema = joi.object({
         'any.only': 'El plan debe ser "plus" o "premium"',
         'any.default': 'El plan por defecto es "plus"',
     }),
-    confirmarContrasenia: joi.string().valid(joi.ref('contraseña')).required().messages({
+    confirmarContrasenia: joi.string().valid(joi.ref('contrasenia')).required().messages({
         'any.only': 'Las contraseñas deben coincidir',
         'any.required': 'La confirmación de contraseña es obligatoria',
     })
