@@ -1,5 +1,5 @@
 import express from "express";
-import { cambiarPlanUsuario } from "../controllers/usuarios.controller";
+import { cambiarPlanUsuario } from "../controllers/usuarios.controller.js";
 
 const router = express.Router({mergeParams: true});
 

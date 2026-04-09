@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { cambiarPlanUsuarioService } from "../services/usuarios.services";
+import { cambiarPlanUsuarioService } from "../services/usuarios.services.js";
 
 
 export const cambiarPlanUsuario = async (req, res) => {
