@@ -40,12 +40,15 @@ export const obtenerRecetasService = async (query) => {
 
 export const obtenerRecetaPorIdService = async (id) => {
     const receta = await Receta.findById(id);
+    return receta;
 };
 
 export const actualizarRecetaService = async (id, recetaData, autor) => {
-        const receta = await Receta.findById(id);
+        const receta = await Receta.findByIdAndUpdate(id, recetaData, { new: true });
+        return receta;
 };
 
-export const eliminarRecetaService = async (id, autor) => {
-            const receta = await Receta.findByIdAndDelete(id);
+export const eliminarRecetaService = async (recetaId) => {
+            const receta = await Receta.findByIdAndDelete(recetaId);
+            return receta;
 };
