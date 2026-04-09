@@ -40,7 +40,7 @@ export const registerUsuario = async (req, res) => {
 
     const hashedPassword = bcrypt.hashSync(contrasenia, process.env.ROUNDS);
 
-    const usuarioExistente = Usuario.find (u=> u.nombre === req.body.nombre);
+    const usuarioExistente = await Usuario.findOne ({ nombre });
 
     if (usuarioExistente) {
         return res.status(400).json({ message: "El nombre de usuario ya esta en uso." });
@@ -48,7 +48,7 @@ export const registerUsuario = async (req, res) => {
 
     let nuevoUsuario = {nombre: req.body.nombre, contrasenia: hashedPassword, plan: req.body.plan};
 
-    Usuario.push(nuevoUsuario);
+    await nuevoUsuario.save(); //guardo el nuevo usuario en la base de datos
 
     const TOKEN = jwt.sign({nombre: nuevoUsuario.nombre, plan: nuevoUsuario.plan}, process.env.SECRET_JWT, { expiresIn: "1h" });
 
