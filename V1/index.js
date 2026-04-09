@@ -5,9 +5,18 @@ import { autorizationMiddleware } from './middlewares/authorization.middleware.j
 
 const router = express.Router({ mergeParams: true });
 
+
+//RUTAS DESPROTEGIDAS
 router.use("/auth", authRouter);
+
+
+
+//MIDDLEWARE DE AUTORIZACIÓN
+router.use(autorizationMiddleware);
+
+//RUTAS PROTEGIDAS
 router.use("/ingredientes", ingredientesRouter);
 
-router.use(autorizationMiddleware);
+
 
 export default router;
