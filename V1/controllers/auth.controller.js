@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import Usuario from "../models/usuario.model.js";
-import { registrarUsuarioService } from "../services/usuarios.services.js";
+import { registrarUsuarioService } from "../services/auth.services.js";
 
 //LOGIN
 
