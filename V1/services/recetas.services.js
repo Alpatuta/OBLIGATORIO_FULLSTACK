@@ -1,5 +1,4 @@
 import Receta from "../models/receta.model.js";
-
 import Usuario from "../models/usuario.model.js";
 
 // PARA CREAR RECETA
@@ -39,7 +38,20 @@ export const obtenerRecetasService = async (query) => {
 }
 
 export const obtenerRecetaPorIdService = async (id) => {
+    //Para validar que el ID que me pasan es un ID de MongoDB válido uso el isValidObjectId.
+    if(!isValidObjectId(id)) {
+        const error = new Error("ID no válido");
+        error.status = 400;
+        throw error;
+    }
+
     const receta = await Receta.findById(id);
+
+    if(!receta) {
+        const error = new Error("Receta no encontrada");
+        error.status = 404;
+        throw error;
+    }
     return receta;
 };
 
