@@ -24,5 +24,11 @@ export const registerSchema = joi.object({
     confirmarContrasenia: joi.string().valid(joi.ref('contrasenia')).required().messages({
         'any.only': 'Las contraseñas deben coincidir',
         'any.required': 'La confirmación de contraseña es obligatoria',
-    })
+    }),
+    correo: joi.string().email().required().messages({
+        'string.base': 'El correo debe ser una cadena de texto',
+        'string.empty': 'El correo no puede estar vacío',
+        'string.email': 'El correo debe tener un formato válido',
+        'any.required': 'El correo es obligatorio',
+    }),
 });

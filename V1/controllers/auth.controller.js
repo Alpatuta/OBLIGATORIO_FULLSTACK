@@ -24,7 +24,7 @@ export const loginUsuario = async (req, res) => {
     }
 
     //Si la autenticacion es correcta, genero un token con la información del usuario y lo devuelvo al cliente.
-    const token = jwt.sign({ nombre: usuarioLogueado.nombre, plan: usuarioLogueado.plan },
+    const token = jwt.sign({ nombre: usuarioLogueado.nombre, correo: usuarioLogueado.correo },
         process.env.SECRET_JWT, { expiresIn: "1h" });
     res.status(200).json({ message: "Login exitoso", token });
 }
@@ -51,7 +51,7 @@ export const registerUsuario = async (req, res) => {
 
     const usuarioCreado = await registrarUsuarioService(nuevoUsuario);
 
-    const TOKEN = jwt.sign({ nombre: usuarioCreado.nombre, plan: usuarioCreado.plan }, process.env.SECRET_JWT, { expiresIn: "1h" });
+    const TOKEN = jwt.sign({ nombre: usuarioCreado.nombre, correo: usuarioCreado.correo }, process.env.SECRET_JWT, { expiresIn: "1h" });
 
     res.status(201).json({ message: "Usuario registrado exitosamente", token: TOKEN });
 }
