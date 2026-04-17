@@ -18,6 +18,14 @@ export const crearRecetaService = async (recetaData, autor) => {
             throw error;
         }
     }
+
+    const recetaExistente = await Receta.findOne({ titulo: recetaData.titulo });
+    if (recetaExistente) {
+        const error = new Error("Ya existe una receta con ese título");
+        error.status = 400;
+        throw error;
+    }
+
     const nuevaReceta = new Receta({ ...recetaData, autor });
     await nuevaReceta.save();
     return nuevaReceta;
