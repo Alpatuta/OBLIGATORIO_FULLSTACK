@@ -5,13 +5,17 @@ import Usuario from "../models/usuario.model.js";
 export const crearRecetaService = async (recetaData, autor) => {
     const usuario = await Usuario.findOne({ correo: autor });
     if (!usuario) {
-        throw new Error("Usuario no encontrado");
+        const error = new Error("Usuario no encontrado");
+        error.status = 404;
+        throw error;
     }
 
     if (usuario.plan === "plus") {
         const cantidad = await Receta.countDocuments({ autor });
         if (cantidad >= 4) {
-            throw new Error("Límite de recetas alcanzado para el plan plus");
+            const error = new Error("Límite de recetas alcanzado para el plan plus");
+            error.status = 400;
+            throw error;
         }
     }
     const nuevaReceta = new Receta({ ...recetaData, autor });

@@ -3,8 +3,7 @@ import mongoose from "mongoose";
 import Categoria from "./categoria.model.js";
 
 const recetaSchema = new mongoose.Schema({
-    recetaId: { type: String, required: true, unique: true },
-    titulo: { type: String, required: true },
+    titulo: { type: String, required: true, unique: true },
     descripcion: { type: String, required: true },
     ingredientes: [{ type: String, required: true }],
     pasos: [{ type: String, required: true }],
@@ -13,7 +12,7 @@ const recetaSchema = new mongoose.Schema({
     dificultad: { type: String, enum: ['Fácil', 'Media', 'Difícil'], required: true },
     // Para relacionar la receta con una categoría, uso el ObjectId de MongoDB y hago referencia al modelo de Categoria.
     categoria: { type: mongoose.Schema.Types.ObjectId, ref: "Categoria", required: true },
-    
+
 });
 
 export default mongoose.model("Receta", recetaSchema);
