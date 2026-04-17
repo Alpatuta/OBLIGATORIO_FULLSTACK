@@ -7,9 +7,9 @@ import { registrarUsuarioService } from "../services/auth.services.js";
 
 export const loginUsuario = async (req, res) => {
 
-    const { nombre, contrasenia } = req.body;
+    const { correo, contrasenia } = req.body;
 
-    const usuarioLogueado = await Usuario.findOne({ nombre });
+    const usuarioLogueado = await Usuario.findOne({ correo });
 
     if (!usuarioLogueado) {
         return res.status(401).json({ message: "Credenciales invalidas" });
@@ -33,7 +33,7 @@ export const loginUsuario = async (req, res) => {
 
 export const registerUsuario = async (req, res) => {
 
-    const { nombre, contrasenia, plan, confirmarContrasenia } = req.body;
+    const { nombre, contrasenia, confirmarContrasenia, correo } = req.body;
 
     if (contrasenia !== confirmarContrasenia) {
         return res.status(400).json({ message: "Las contraseñas no coinciden" });
@@ -41,13 +41,13 @@ export const registerUsuario = async (req, res) => {
 
     const hashedPassword = bcrypt.hashSync(contrasenia, process.env.ROUNDS);
 
-    const usuarioExistente = await Usuario.findOne({ nombre });
+    const usuarioExistente = await Usuario.findOne({ correo });
 
     if (usuarioExistente) {
-        return res.status(400).json({ message: "El nombre de usuario ya esta en uso." });
+        return res.status(400).json({ message: "El correo ya esta en uso." });
     }
 
-    let nuevoUsuario = { nombre: req.body.nombre, contrasenia: hashedPassword, plan: req.body.plan };
+    let nuevoUsuario = { nombre: req.body.nombre, contrasenia: hashedPassword, correo: req.body.correo };
 
     const usuarioCreado = await registrarUsuarioService(nuevoUsuario);
 

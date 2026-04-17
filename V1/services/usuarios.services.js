@@ -1,13 +1,17 @@
 import Usuario from "../models/usuario.model.js";
 
-export const cambiarPlanUsuarioService = async (nombre) => {
-    const usuario = await Usuario.findOne({ nombre });
+export const cambiarPlanUsuarioService = async (correo) => {
+    const usuario = await Usuario.findOne({ correo });
 
     if (!usuario) {
-        throw new Error("Usuario no encontrado");
-    }  
+        const error = new Error("Usuario no encontrado");
+        error.status = 404;
+        throw error;
+    }
     if (usuario.plan === "premium") {
-        throw new Error("El usuario ya tiene el plan premium");
+        const error = new Error("El usuario ya tiene el plan premium");
+        error.status = 400;
+        throw error;
     }
 
     usuario.plan = "premium";

@@ -3,7 +3,7 @@ import Usuario from "../models/usuario.model.js";
 
 // PARA CREAR RECETA
 export const crearRecetaService = async (recetaData, autor) => {
-    const usuario = await Usuario.findOne({ nombre: autor });
+    const usuario = await Usuario.findOne({ correo: autor });
     if (!usuario) {
         throw new Error("Usuario no encontrado");
     }
@@ -34,12 +34,12 @@ export const obtenerRecetasService = async (query) => {
         .skip((page - 1) * limit) // Calcula el número de documentos a omitir porque sino 
         // siempre va a mostrar las primeras recetas
         .limit(limit); // Limita la cantidad de recetas que se muestran por página ya que sino muestra todas las recetas
-   return recetas;
+    return recetas;
 }
 
 export const obtenerRecetaPorIdService = async (id) => {
     //Para validar que el ID que me pasan es un ID de MongoDB válido uso el isValidObjectId.
-    if(!isValidObjectId(id)) {
+    if (!isValidObjectId(id)) {
         const error = new Error("ID no válido");
         error.status = 400;
         throw error;
@@ -47,7 +47,7 @@ export const obtenerRecetaPorIdService = async (id) => {
 
     const receta = await Receta.findById(id);
 
-    if(!receta) {
+    if (!receta) {
         const error = new Error("Receta no encontrada");
         error.status = 404;
         throw error;
@@ -56,11 +56,11 @@ export const obtenerRecetaPorIdService = async (id) => {
 };
 
 export const actualizarRecetaService = async (id, recetaData, autor) => {
-        const receta = await Receta.findByIdAndUpdate(id, recetaData, { new: true });
-        return receta;
+    const receta = await Receta.findByIdAndUpdate(id, recetaData, { new: true });
+    return receta;
 };
 
 export const eliminarRecetaService = async (recetaId) => {
-            const receta = await Receta.findByIdAndDelete(recetaId);
-            return receta;
+    const receta = await Receta.findByIdAndDelete(recetaId);
+    return receta;
 };
