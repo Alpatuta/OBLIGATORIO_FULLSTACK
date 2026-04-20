@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import v1Router from "./V1/index.js";
 import { connectDB } from "./V1/config/db.js";
-import { notFoundMiddleware } from "./v1/middlewares/notFound.middleware.js";
+import { notFoundMiddleware } from "./V1/middlewares/notFound.middleware.js";
 
 dotenv.config();
 
