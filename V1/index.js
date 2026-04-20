@@ -3,6 +3,7 @@ import authRouter from './routes/auth.routes.js';
 import ingredientesRouter from './routes/ingredientes.routes.js';
 import usuariosRouter from './routes/usuarios.routes.js';
 import recetasRouter from './routes/recetas.routes.js';
+import aiRouter from "./routes/ai.routes.js";
 import { autorizationMiddleware } from './middlewares/authorization.middleware.js';
 
 const router = express.Router({ mergeParams: true });
@@ -22,5 +23,7 @@ router.use("/ingredientes", ingredientesRouter);
 router.use("/usuarios",usuariosRouter);
 
 router.use("/recetas", recetasRouter);
+
+router.use("/ai", aiRouter);
 
 export default router;
