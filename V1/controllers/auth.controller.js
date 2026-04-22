@@ -23,7 +23,7 @@ export const loginUsuario = async (req, res) => {
         return res.status(401).json({ message: "Credenciales invalidas" });
     }
 
-    //Si la autenticacion es correcta, genero un token con la información del usuario y lo devuelvo al cliente.
+    //Si la autenticación es correcta, genero un token con la información del usuario y lo devuelvo al cliente.
     const token = jwt.sign({ idUsuario: usuarioLogueado._id, nombre: usuarioLogueado.nombre, correo: usuarioLogueado.correo, rol: usuarioLogueado.rol },
         process.env.SECRET_JWT, { expiresIn: "1h" });
     res.status(200).json({ message: "Login exitoso", token });
