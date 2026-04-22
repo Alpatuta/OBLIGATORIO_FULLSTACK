@@ -8,4 +8,7 @@ const ingredienteSchema = new mongoose.Schema({
 });
 
 export default mongoose.model("Ingrediente", ingredienteSchema);
-/**Esto hace que el primer ingrediente se guarda en la coleccion ingredientes. La generación de la colección es automática según el nombre del modelo. Lo hace en ingles por lo que cuando creo un modelo que solo con una s al final no hace plural, lo agrego como tercer parámetro */
+/**Esto hace que el primer ingrediente se guarda en la coleccion ingredientes. 
+ * La generación de la colección es automática según el nombre del modelo.
+ *  Lo hace en ingles por lo que cuando creo un modelo que solo con una s al final no hace plural, 
+ * lo agrego como tercer parámetro */

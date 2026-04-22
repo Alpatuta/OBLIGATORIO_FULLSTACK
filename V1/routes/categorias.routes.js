@@ -11,3 +11,4 @@ router.patch("/:id", actualizarCategoria);
 router.delete("/:id", eliminarCategoria);
 
 export default router;
+
