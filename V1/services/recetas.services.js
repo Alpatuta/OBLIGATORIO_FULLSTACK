@@ -68,11 +68,43 @@ export const obtenerRecetaPorIdService = async (id) => {
 };
 
 export const actualizarRecetaService = async (id, recetaData, autor) => {
-    const receta = await Receta.findByIdAndUpdate(id, recetaData, { new: true });
-    return receta;
+    if (!isValidObjectId(id)) {
+        const error = new Error("ID no válido");
+        error.status = 400;
+        throw error;
+    }
+
+    const recetaExistente = await Receta.findOne({ titulo: recetaData.titulo, _id: { $ne: id } }); 
+    
+    if (recetaExistente) {
+        const error = new Error("Ya existe una receta con ese título");
+        error.status = 400;
+        throw error;
+    }
+
+    const receta = await Receta.findById(id);
+    if (!receta) {
+        const error = new Error("Receta no encontrada");
+        error.status = 404;
+        throw error;
+    }
+     const recetaActualizada = await Receta.findByIdAndUpdate(id, recetaData, { new: true });
+
+    return recetaActualizada;
 };
 
 export const eliminarRecetaService = async (recetaId) => {
+
+    if (!isValidObjectId(recetaId)) {
+        const error = new Error("ID no válido");
+        error.status = 400;
+        throw error;
+    }
     const receta = await Receta.findByIdAndDelete(recetaId);
+    if (!receta) {
+        const error = new Error("Receta no encontrada");
+        error.status = 404;
+        throw error;
+    }
     return receta;
 };
