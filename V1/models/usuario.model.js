@@ -6,6 +6,7 @@ const usuarioSchema = new mongoose.Schema({
     contrasenia: { type: String, required: true },
     plan: { type: String, enum: ['plus', 'premium'], default: 'plus' },
     fechaCreacion: { type: Date, default: Date.now },
+    rol: { type: String, enum: ['user', 'admin'], default: 'user' },
 });
 
 export default mongoose.model('Usuario', usuarioSchema);

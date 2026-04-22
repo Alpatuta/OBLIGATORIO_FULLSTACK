@@ -16,10 +16,6 @@ export const crearUsuarioSchema = joi.object({
         'string.max': 'La contraseña no puede tener más de 100 caracteres',
         'any.required': 'La contraseña es obligatoria',
     }),
-    plan: joi.string().valid('plus', 'premium').default('plus').messages({
-        'any.only': 'El plan debe ser "plus" o "premium"',
-        'any.default': 'El plan por defecto es "plus"',
-    }),
     confirmarContrasenia: joi.string().valid(joi.ref('contraseña')).required().messages({
         'any.only': 'Las contraseñas deben coincidir',
         'any.required': 'La confirmación de contraseña es obligatoria',

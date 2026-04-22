@@ -18,6 +18,8 @@ router.use("/auth", authRouter);
 //MIDDLEWARE DE AUTORIZACIÓN
 router.use(autorizationMiddleware);
 
+//TODO: tenemos que agregar access middleware para el rol del usuario plus y solo el tenga acceso a cambiarDePlan segun lo que dijo el profe el 22/4/26
+
 //RUTAS PROTEGIDAS
 router.use("/ingredientes", ingredientesRouter);
 

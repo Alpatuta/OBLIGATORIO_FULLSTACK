@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-//Cambiando nombre de archivo para vercel
+
 export const autorizationMiddleware = (req, res, next) => {
 
     const auth = req.headers.authorization
