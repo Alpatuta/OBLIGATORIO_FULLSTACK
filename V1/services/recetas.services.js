@@ -3,6 +3,8 @@ import Usuario from "../models/usuario.model.js";
 import { isValidObjectId } from "mongoose";
 import axios from "axios";
 
+const MEALDB_API_URL = "https://www.themealdb.com/api/json/v1/1";
+
 // PARA CREAR RECETA
 export const crearRecetaService = async (recetaData, autor) => {
     const usuario = await Usuario.findOne({ correo: autor });
@@ -132,7 +134,7 @@ export const obtenerRecetasCombinadasService = async (query) => {
 
         //Hago try por las dudas de que la API externa falle o tenga algún error, para no romper toda la consulta de recetas combinadas
         try {
-            response = await axios.get(`${process.env.MEALDB_API_URL}/filter.php?i=${ing}`);
+            response = await axios.get(`${MEALDB_API_URL}/filter.php?i=${ing}`);
         } catch (e) {
             const error = new Error("Error al consumir API externa");
             error.status = 500;
