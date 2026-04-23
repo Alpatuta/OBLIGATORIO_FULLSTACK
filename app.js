@@ -5,6 +5,7 @@ import v1Router from "./V1/index.js";
 import { limiter } from "./V1/middlewares/limiter.middleware.js";
 import { connectDB } from "./V1/config/db.js";
 import { notFoundMiddleware } from "./V1/middlewares/notFound.middleware.js";
+import { errorMiddleware } from "./V1/middlewares/error.middleware.js";
 
 dotenv.config();
 
@@ -24,5 +25,5 @@ app.use(limiter);
 app.use("/V1", v1Router);
 
 app.use(notFoundMiddleware);
-
+app.use(errorMiddleware);
 export default app;
