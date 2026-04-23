@@ -1,5 +1,6 @@
 import Receta from "../models/receta.model.js";
 import Usuario from "../models/usuario.model.js";
+import axios from "axios";
 
 // PARA CREAR RECETA
 export const crearRecetaService = async (recetaData, autor) => {
@@ -74,8 +75,8 @@ export const actualizarRecetaService = async (id, recetaData, autor) => {
         throw error;
     }
 
-    const recetaExistente = await Receta.findOne({ titulo: recetaData.titulo, _id: { $ne: id } }); 
-    
+    const recetaExistente = await Receta.findOne({ titulo: recetaData.titulo, _id: { $ne: id } });
+
     if (recetaExistente) {
         const error = new Error("Ya existe una receta con ese título");
         error.status = 400;
@@ -88,7 +89,7 @@ export const actualizarRecetaService = async (id, recetaData, autor) => {
         error.status = 404;
         throw error;
     }
-     const recetaActualizada = await Receta.findByIdAndUpdate(id, recetaData, { new: true });
+    const recetaActualizada = await Receta.findByIdAndUpdate(id, recetaData, { new: true });
 
     return recetaActualizada;
 };
@@ -107,4 +108,91 @@ export const eliminarRecetaService = async (recetaId) => {
         throw error;
     }
     return receta;
+};
+
+
+export const obtenerRecetasCombinadasService = async (query) => {
+
+    const { ing1, ing2, ing3 } = query;
+
+    const ingredientes = [ing1, ing2, ing3].filter(Boolean);
+
+    if (ingredientes.length === 0) {
+        const error = new Error("Debe enviar al menos un ingrediente");
+        error.status = 400;
+        throw error;
+    }
+
+    let mapa = {};
+
+    //EXTERNAS
+    for (let ing of ingredientes) {
+        let response;
+
+        //Hago try por las dudas de que la API externa falle o tenga algún error, para no romper toda la consulta de recetas combinadas
+        try {
+            response = await axios.get(`${process.env.MEALDB_API_URL}/filter.php?i=${ing}`);
+        } catch (e) {
+            const error = new Error("Error al consumir API externa");
+            error.status = 500;
+            throw error;
+        }
+
+        const lista = response.data.meals || [];
+
+        lista.forEach(receta => {
+            if (!mapa[receta.idMeal]) {
+                mapa[receta.idMeal] = {
+                    id: receta.idMeal,
+                    titulo: receta.strMeal,
+                    imagen: receta.strMealThumb,
+                    origen: "externa",
+                    ingredientesMatch: 0
+                };
+            }
+            mapa[receta.idMeal].ingredientesMatch++;
+        });
+    }
+
+
+    //INTERNAS
+    const recetasInternas = await Receta.find();
+
+    recetasInternas.forEach(receta => {
+
+        let match = 0;
+
+        ingredientes.forEach(ing => {
+            if (receta.ingredientes.some(i => i.toLowerCase().includes(ing.toLowerCase()))) {
+                match++;
+            }
+        });
+
+        if (match > 0) {
+            mapa[receta._id] = {
+                id: receta._id,
+                titulo: receta.titulo,
+                descripcion: receta.descripcion,
+                origen: "interna",
+                ingredientesMatch: match
+            };
+        }
+    });
+
+    const recetas = Object.values(mapa);
+
+    if (recetas.length === 0) {
+        const error = new Error("No se encontraron recetas");
+        error.status = 404;
+        throw error;
+    }
+
+    //FILTRO
+    const completas = recetas.filter(r => r.ingredientesMatch === ingredientes.length);
+
+    if (completas.length > 0) {
+        return completas.sort((a, b) => b.ingredientesMatch - a.ingredientesMatch);
+    }
+
+    return recetas.sort((a, b) => b.ingredientesMatch - a.ingredientesMatch);
 };

@@ -3,7 +3,8 @@ import {
     obtenerRecetasService,
     obtenerRecetaPorIdService,
     actualizarRecetaService,
-    eliminarRecetaService
+    eliminarRecetaService,
+    obtenerRecetasCombinadasService
 } from "../services/recetas.services.js";
 
 //ALTA
@@ -50,4 +51,13 @@ export const eliminarReceta = async (req, res) => {
     const recetaEliminada = await eliminarRecetaService(req.params.id, req.user.correo);
     res.status(200).json({ message: "Receta eliminada exitosamente", receta: recetaEliminada });
 
-};   
+};
+
+// OBTENER RECETAS COMBINADAS
+
+export const obtenerRecetasCombinadas = async (req, res) => {
+
+    const recetas = await obtenerRecetasCombinadasService(req.query);
+    res.status(200).json({ message: "Recetas combinadas obtenidas exitosamente", recetas });
+
+};
