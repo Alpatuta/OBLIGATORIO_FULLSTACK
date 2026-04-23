@@ -1,16 +1,20 @@
 import express from "express";
-import { crearReceta,
+import {
+    crearReceta,
     obtenerRecetas,
     obtenerRecetaPorId,
     actualizarReceta,
-    eliminarReceta } from "../controllers/recetas.controller.js";
+    eliminarReceta,
+    obtenerRecetasCombinadas
+} from "../controllers/recetas.controller.js";
 
-const router = express.Router({mergeParams: true});
+const router = express.Router({ mergeParams: true });
 
 router.post("/", crearReceta);
 router.get("/", obtenerRecetas);
 router.get("/:id", obtenerRecetaPorId);
 router.patch("/:id", actualizarReceta);
 router.delete("/:id", eliminarReceta);
+router.get("/combinadas", obtenerRecetasCombinadas);
 
 export default router;
