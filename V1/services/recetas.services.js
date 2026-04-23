@@ -78,17 +78,19 @@ export const actualizarRecetaService = async (id, recetaData, autor) => {
         throw error;
     }
 
-    if (recetaData.autor !== autor) {
-        const error = new Error("No tienes permiso para actualizar esta receta. Solo el autor puede actualizarla.");
-        error.status = 403;
-        throw error;
-    }
+
 
     const recetaExistente = await Receta.findOne({ titulo: recetaData.titulo, _id: { $ne: id } });
 
     if (recetaExistente) {
         const error = new Error("Ya existe una receta con ese título");
         error.status = 400;
+        throw error;
+    }
+
+    if (recetaExistente.autor !== autor) {
+        const error = new Error("No tienes permiso para actualizar esta receta. Solo el autor puede actualizarla.");
+        error.status = 403;
         throw error;
     }
 
