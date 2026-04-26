@@ -2,7 +2,7 @@ import { crearCategoriaService,
     obtenerCategoriaPorIdService,
     obtenerCategoriasService,
     eliminarCategoriaService,
-    actualizarCategoriaService } from "../services/categoria.services";    
+    actualizarCategoriaService } from "../services/categoria.services.js";    
 
 
     //ALTA
