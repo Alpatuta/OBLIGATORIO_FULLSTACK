@@ -3,6 +3,7 @@ import authRouter from './routes/auth.routes.js';
 import ingredientesRouter from './routes/ingredientes.routes.js';
 import usuariosRouter from './routes/usuarios.routes.js';
 import recetasRouter from './routes/recetas.routes.js';
+import categoriasRouter from './routes/categorias.routes.js';
 import aiRouter from "./routes/ai.routes.js";
 import uploadRouter  from './routes/uploads.routes.js';
 import { autorizationMiddleware } from './middlewares/authorization.middleware.js';
@@ -26,6 +27,8 @@ router.use("/ingredientes", ingredientesRouter);
 router.use("/usuarios",usuariosRouter);
 
 router.use("/recetas", recetasRouter);
+
+router.use("/categorias", categoriasRouter);
 
 router.use("/ai", aiRouter);
 
