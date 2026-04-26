@@ -1,12 +1,15 @@
 import express from "express";
 import { agregarIngrediente, obtenerIngredientes, obtenerIngredientePorId, actualizarIngrediente, eliminarIngrediente } from "../controllers/ingrediente.controller.js";
-
+import { validateBodyMiddleware } from "../middlewares/validateBody.middleware.js";
+import { ingredienteSchema } from "../validators/ingredientes.validators.js";
 const router = express.Router({ mergeParams: true });
 
-router.post("/", agregarIngrediente);
+router.post("/",validateBodyMiddleware(ingredienteSchema), agregarIngrediente);
 router.get("/", obtenerIngredientes);
 router.get("/:id", obtenerIngredientePorId);
 router.patch("/:id", actualizarIngrediente);
 router.delete("/:id", eliminarIngrediente);
 
 export default router;
+
+
