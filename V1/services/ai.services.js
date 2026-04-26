@@ -62,15 +62,36 @@ export const generarYGuardarRecetaIAService = async (ingredientes, dificultad, a
 
     const texto = response.data.candidates[0].content.parts[0].text;
 
-    let recetaIA;
 
-    try {
-        recetaIA = JSON.parse(texto);
-    } catch {
-        const error = new Error("Respuesta inválida de la IA");
-        error.status = 500;
-        throw error;
-    }
+// EXTRAER JSON DEL TEXTO
+
+const match = texto.match(/\{[\s\S]*\}/);
+
+if (!match) {
+
+    const error = new Error("No se pudo extraer JSON de la respuesta de la IA");
+
+    error.status = 500;
+
+    throw error;
+
+}
+
+let recetaIA;
+
+try {
+
+    recetaIA = JSON.parse(match[0]);
+
+} catch {
+
+    const error = new Error("Respuesta inválida de la IA");
+
+    error.status = 500;
+
+    throw error;
+
+}
 
     if (!recetaIA.titulo || !recetaIA.descripcion) {
         const error = new Error("Datos incompletos generados por IA");
