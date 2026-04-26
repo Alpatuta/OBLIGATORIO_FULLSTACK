@@ -7,10 +7,11 @@ import {
     eliminarReceta,
     obtenerRecetasCombinadas
 } from "../controllers/recetas.controller.js";
+import { validateBodyMiddleware } from "../middlewares/validateBody.middleware.js";
 
 const router = express.Router({ mergeParams: true });
 
-router.post("/", crearReceta);
+router.post("/",validateBodyMiddleware(recetaSchema), crearReceta);
 router.get("/", obtenerRecetas);
 router.get("/combinadas", obtenerRecetasCombinadas);
 router.get("/:id", obtenerRecetaPorId);
