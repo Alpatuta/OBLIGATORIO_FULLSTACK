@@ -6,7 +6,7 @@ import {
     eliminarRecetaService,
     obtenerRecetasCombinadasService
 } from "../services/recetas.services.js";
-import {  generarYGuardarRecetaIAService} from "../services/ai.services.js";
+import {  generarYGuardarRecetaIAService, adaptarRecetaIAService} from "../services/ai.services.js";
 
 //ALTA
 
@@ -89,4 +89,22 @@ export const generarYGuardarRecetaIA = async (req, res) => {
 
     });
 
+};
+
+//MEJORAR RECETA EXISTENTE CON IA
+
+export const adaptarRecetaIA = async (req, res) => {
+
+    const { tipo } = req.body;
+
+    const nuevaReceta = await adaptarRecetaIAService(
+        req.params.id,
+        tipo,
+        req.user.correo
+    );
+
+    res.status(201).json({
+        message: "Receta adaptada y guardada",
+        receta: nuevaReceta
+    });
 };
