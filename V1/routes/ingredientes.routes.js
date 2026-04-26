@@ -1,7 +1,8 @@
 import express from "express";
 import { agregarIngrediente, obtenerIngredientes, obtenerIngredientePorId, actualizarIngrediente, eliminarIngrediente } from "../controllers/ingrediente.controller.js";
 import { validateBodyMiddleware } from "../middlewares/validateBody.middleware.js";
-import { ingredienteSchema } from "../validators/ingredientes.validators.js";
+import { ingredienteSchema} from "../validators/ingredientes.validators.js"
+
 const router = express.Router({ mergeParams: true });
 
 router.post("/",validateBodyMiddleware(ingredienteSchema), agregarIngrediente);
