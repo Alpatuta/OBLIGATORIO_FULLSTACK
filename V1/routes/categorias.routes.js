@@ -1,6 +1,10 @@
 import express from "express";
 
-import {  } from "../controllers/categorias.controller.js";
+import { crearCategoria,
+    obtenerCategorias,
+    obtenerCategoriaPorId,
+    actualizarCategoria,
+    eliminarCategoria } from "../controllers/categorias.controller.js";
 
 const router = express.Router({mergeParams: true});
 
