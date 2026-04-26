@@ -1,5 +1,5 @@
 import Categoria from "../models/categoria.model.js";
-
+import { isValidObjectId } from "mongoose";
 
 //CREAR CATEGORIA
 
