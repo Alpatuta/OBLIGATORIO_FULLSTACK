@@ -6,7 +6,7 @@ import {
     eliminarRecetaService,
     obtenerRecetasCombinadasService
 } from "../services/recetas.services.js";
-import { generarRecetaIAService } from "../services/ai.services.js";
+import {  generarYGuardarRecetaIAService} from "../services/ai.services.js";
 
 //ALTA
 
@@ -65,15 +65,25 @@ export const obtenerRecetasCombinadas = async (req, res) => {
 
 // GENERAR RECETA CON IA
 
-export const generarRecetaIA = async (req, res) => {
+export const generarYGuardarRecetaIA = async (req, res) => {
 
-    const { ingredientes, dificultad } = req.body;
+    const { ingredientes, dificultad, categoria } = req.body;
 
-    const receta = await generarRecetaIAService(ingredientes, dificultad);
+    const receta = await generarYGuardarRecetaIAService(
 
-    res.status(200).json({
+        ingredientes,
 
-        message: "Receta generada exitosamente con IA",
+        dificultad,
+
+        req.user.correo,
+
+        categoria
+
+    );
+
+    res.status(201).json({
+
+        message: "Receta generada y guardada exitosamente",
 
         receta
 

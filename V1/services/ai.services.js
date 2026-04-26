@@ -1,4 +1,6 @@
 import axios from "axios";
+import Receta from "../models/receta.model.js";
+import Usuario from "../models/usuario.model.js";
 
 const API_KEY = process.env.GEMINI_25_API_KEY;
 const MODEL = "gemini-2.5-flash";
@@ -9,7 +11,7 @@ const headers = {
     "x-goog-api-key": API_KEY
 };
 
-export const generarRecetaIAService = async (ingredientes, dificultad) => {
+export const generarYGuardarRecetaIAService = async (ingredientes, dificultad, autor, categoria) => {
 
     if (!ingredientes || ingredientes.length === 0) {
         const error = new Error("Debe enviar al menos un ingrediente");
@@ -17,11 +19,20 @@ export const generarRecetaIAService = async (ingredientes, dificultad) => {
         throw error;
     }
 
-    const prompt = `
-    Genera una receta con estos ingredientes: ${ingredientes.join(", ")}.
-    Dificultad: ${dificultad}.
+    const usuario = await Usuario.findOne({ correo: autor });
+    if (!usuario) {
+        const error = new Error("Usuario no encontrado");
+        error.status = 404;
+        throw error;
+    }
 
-    RESPONDE SOLO JSON:
+
+    const prompt = `
+    Generate a cooking recipe using these ingredients: ${ingredientes.join(", ")}.
+    Difficulty: ${dificultad}.
+
+    IMPORTANT: Respond ONLY in valid JSON format and in ENGLISH.
+
     {
       "titulo": "",
       "descripcion": "",
@@ -51,11 +62,34 @@ export const generarRecetaIAService = async (ingredientes, dificultad) => {
 
     const texto = response.data.candidates[0].content.parts[0].text;
 
+    let recetaIA;
+
     try {
-        return JSON.parse(texto);
+        recetaIA = JSON.parse(texto);
     } catch {
         const error = new Error("Respuesta inválida de la IA");
         error.status = 500;
         throw error;
     }
+
+    if (!recetaIA.titulo || !recetaIA.descripcion) {
+        const error = new Error("Datos incompletos generados por IA");
+        error.status = 500;
+        throw error;
+    }
+
+    // GUARDADO EN DB
+    const nuevaReceta = new Receta({
+        titulo: recetaIA.titulo,
+        descripcion: recetaIA.descripcion,
+        ingredientes: recetaIA.ingredientes,
+        pasos: recetaIA.pasos,
+        autor,
+        dificultad,
+        categoria
+    });
+
+    await nuevaReceta.save();
+
+    return nuevaReceta;
 };
