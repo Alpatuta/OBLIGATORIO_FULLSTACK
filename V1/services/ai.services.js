@@ -1,35 +1,37 @@
 import axios from "axios";
 import Receta from "../models/receta.model.js";
 import Usuario from "../models/usuario.model.js";
-
+import Categoria from "../models/categoria.model.js";
 const API_KEY = process.env.GEMINI_25_API_KEY;
 const MODEL = "gemini-2.5-flash";
 const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
 
 const headers = {
-    "Content-Type": "application/json",
-    "x-goog-api-key": API_KEY
+  "Content-Type": "application/json",
+  "x-goog-api-key": API_KEY,
 };
 
-
 // METODO PARA GENERAR Y GUARDAR RECETA CON IA
-export const generarYGuardarRecetaIAService = async (ingredientes, dificultad, autor, categoria) => {
+export const generarYGuardarRecetaIAService = async (
+  ingredientes,
+  dificultad,
+  autor,
+  categoria,
+) => {
+  if (!ingredientes || ingredientes.length === 0) {
+    const error = new Error("Debe enviar al menos un ingrediente");
+    error.status = 400;
+    throw error;
+  }
 
-    if (!ingredientes || ingredientes.length === 0) {
-        const error = new Error("Debe enviar al menos un ingrediente");
-        error.status = 400;
-        throw error;
-    }
+  const usuario = await Usuario.findOne({ correo: autor });
+  if (!usuario) {
+    const error = new Error("Usuario no encontrado");
+    error.status = 404;
+    throw error;
+  }
 
-    const usuario = await Usuario.findOne({ correo: autor });
-    if (!usuario) {
-        const error = new Error("Usuario no encontrado");
-        error.status = 404;
-        throw error;
-    }
-
-
-    const prompt = `
+  const prompt = `
     Generate a cooking recipe using these ingredients: ${ingredientes.join(", ")}.
     Difficulty: ${dificultad}.
 
@@ -43,99 +45,100 @@ export const generarYGuardarRecetaIAService = async (ingredientes, dificultad, a
     }
     `;
 
-    let response;
+  let response;
 
-    try {
-        response = await axios.post(ENDPOINT, {
-            contents: [{ parts: [{ text: prompt }] }]
-        }, { headers });
+  try {
+    response = await axios.post(
+      ENDPOINT,
+      {
+        contents: [{ parts: [{ text: prompt }] }],
+      },
+      { headers },
+    );
+  } catch (e) {
+    const error = new Error("Error al consumir IA");
+    error.status = 500;
+    throw error;
+  }
 
-    } catch (e) {
-        const error = new Error("Error al consumir IA");
-        error.status = 500;
-        throw error;
-    }
+  if (!response.data.candidates || response.data.candidates.length === 0) {
+    const error = new Error("IA no devolvió resultados");
+    error.status = 500;
+    throw error;
+  }
 
-    if (!response.data.candidates || response.data.candidates.length === 0) {
-        const error = new Error("IA no devolvió resultados");
-        error.status = 500;
-        throw error;
-    }
+  const texto = response.data.candidates[0].content.parts[0].text;
 
-    const texto = response.data.candidates[0].content.parts[0].text;
+  // EXTRAER JSON DEL TEXTO
 
+  const match = texto.match(/\{[\s\S]*\}/);
 
-// EXTRAER JSON DEL TEXTO
-
-const match = texto.match(/\{[\s\S]*\}/);
-
-if (!match) {
-
+  if (!match) {
     const error = new Error("No se pudo extraer JSON de la respuesta de la IA");
 
     error.status = 500;
 
     throw error;
+  }
 
-}
+  let recetaIA;
 
-let recetaIA;
-
-try {
-
+  try {
     recetaIA = JSON.parse(match[0]);
-
-} catch {
-
+  } catch {
     const error = new Error("Respuesta inválida de la IA");
 
     error.status = 500;
 
     throw error;
+  }
 
-}
+  if (!recetaIA.titulo || !recetaIA.descripcion) {
+    const error = new Error("Datos incompletos generados por IA");
+    error.status = 500;
+    throw error;
+  }
 
-    if (!recetaIA.titulo || !recetaIA.descripcion) {
-        const error = new Error("Datos incompletos generados por IA");
-        error.status = 500;
-        throw error;
-    }
+  // GUARDADO EN DB
+  const nuevaReceta = new Receta({
+    titulo: recetaIA.titulo,
+    descripcion: recetaIA.descripcion,
+    ingredientes: recetaIA.ingredientes,
+    pasos: recetaIA.pasos,
+    autor,
+    dificultad,
+    categoria,
+  });
 
-    // GUARDADO EN DB
-    const nuevaReceta = new Receta({
-        titulo: recetaIA.titulo,
-        descripcion: recetaIA.descripcion,
-        ingredientes: recetaIA.ingredientes,
-        pasos: recetaIA.pasos,
-        autor,
-        dificultad,
-        categoria
-    });
+  await nuevaReceta.save();
 
-    await nuevaReceta.save();
+  await Categoria.findByIdAndUpdate(
+    categoria,
 
-    return nuevaReceta;
+    { $addToSet: { recetas: nuevaReceta._id } },
+  );
+
+  return nuevaReceta;
 };
 
 //METODO PARA MEJORAR RECETA EXISTENTE CON IA
 
 export const adaptarRecetaIAService = async (id, tipo, autor) => {
+  const receta = await Receta.findById(id);
 
-    const receta = await Receta.findById(id);
+  if (!receta) {
+    const error = new Error("Receta no encontrada");
+    error.status = 404;
+    throw error;
+  }
 
-    if (!receta) {
-        const error = new Error("Receta no encontrada");
-        error.status = 404;
-        throw error;
-    }
+  if (!tipo) {
+    const error = new Error("Debe indicar el tipo de adaptación");
+    error.status = 400;
+    throw error;
+  }
 
-    if (!tipo) {
-        const error = new Error("Debe indicar el tipo de adaptación");
-        error.status = 400;
-        throw error;
-    }
-
-    const prompt = `
+  const prompt = `
     Convert this recipe into a ${tipo} version.
 
     IMPORTANT:
@@ -153,50 +156,60 @@ export const adaptarRecetaIAService = async (id, tipo, autor) => {
     }
     `;
 
-    let response;
+  let response;
 
-    try {
-        response = await axios.post(ENDPOINT, {
-            contents: [{ parts: [{ text: prompt }] }]
-        }, { headers });
-    } catch {
-        const error = new Error("Error al consumir IA");
-        error.status = 500;
-        throw error;
-    }
+  try {
+    response = await axios.post(
+      ENDPOINT,
+      {
+        contents: [{ parts: [{ text: prompt }] }],
+      },
+      { headers },
+    );
+  } catch {
+    const error = new Error("Error al consumir IA");
+    error.status = 500;
+    throw error;
+  }
 
-    const texto = response.data.candidates[0].content.parts[0].text;
+  const texto = response.data.candidates[0].content.parts[0].text;
 
-    const match = texto.match(/\{[\s\S]*\}/);
+  const match = texto.match(/\{[\s\S]*\}/);
 
-    if (!match) {
-        const error = new Error("No se pudo extraer JSON");
-        error.status = 500;
-        throw error;
-    }
+  if (!match) {
+    const error = new Error("No se pudo extraer JSON");
+    error.status = 500;
+    throw error;
+  }
 
-    let recetaIA;
+  let recetaIA;
 
-    try {
-        recetaIA = JSON.parse(match[0]);
-    } catch {
-        const error = new Error("Respuesta inválida de la IA");
-        error.status = 500;
-        throw error;
-    }
+  try {
+    recetaIA = JSON.parse(match[0]);
+  } catch {
+    const error = new Error("Respuesta inválida de la IA");
+    error.status = 500;
+    throw error;
+  }
 
-    //  CREAR NUEVA RECETA en DB
-    const nuevaReceta = new Receta({
-        titulo: recetaIA.titulo + ` (${tipo})`,
-        descripcion: recetaIA.descripcion,
-        ingredientes: recetaIA.ingredientes,
-        pasos: recetaIA.pasos,
-        autor,
-        dificultad: receta.dificultad,
-        categoria: receta.categoria,
-    }); 
+  //  CREAR NUEVA RECETA en DB
+  const nuevaReceta = new Receta({
+    titulo: recetaIA.titulo + ` (${tipo})`,
+    descripcion: recetaIA.descripcion,
+    ingredientes: recetaIA.ingredientes,
+    pasos: recetaIA.pasos,
+    autor,
+    dificultad: receta.dificultad,
+    categoria: receta.categoria,
+  });
 
-    await nuevaReceta.save();
+  await nuevaReceta.save();
 
-    return nuevaReceta;
+  await Categoria.findByIdAndUpdate(
+    receta.categoria,
+
+    { $addToSet: { recetas: nuevaReceta._id } },
+  );
+
+  return nuevaReceta;
 };
