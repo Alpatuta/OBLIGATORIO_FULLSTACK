@@ -10,7 +10,7 @@ import {
     adaptarRecetaIA
 } from "../controllers/recetas.controller.js";
 import { validateBodyMiddleware } from "../middlewares/validateBody.middleware.js";
-import { crearRecetaSchema } from "../validators/recetas.validators.js";
+import { crearRecetaSchema,actualizarRecetaSchema } from "../validators/recetas.validators.js";
 import { generarYGuardarRecetaIASchema } from "../validators/ai.validators.js";
 import { adaptarRecetaSchema } from "../validators/ai.validators.js";
 
@@ -22,7 +22,7 @@ router.post("/:id/adaptar",validateBodyMiddleware(adaptarRecetaSchema),adaptarRe
 router.get("/", obtenerRecetas);
 router.get("/combinadas", obtenerRecetasCombinadas);
 router.get("/:id", obtenerRecetaPorId);
-router.patch("/:id", actualizarReceta);
+router.patch("/:id", validateBodyMiddleware(actualizarRecetaSchema), actualizarReceta);
 router.delete("/:id", eliminarReceta);
 
 export default router;

@@ -19,3 +19,5 @@ export const adaptarRecetaSchema = joi.object({
             "any.required": "El tipo es obligatorio"
         })
 });
+
+
