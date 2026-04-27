@@ -20,7 +20,7 @@ export const crearCategoriaService = async (categoriaData) => {
 //OBTENER CATEGORIAS
 
 export const obtenerCategoriasService = async () => {
-    const categorias = await Categoria.find().populate("recetas", "nombre"); // Popula solo el campo "nombre" de las recetas relacionadas
+    const categorias = await Categoria.find().populate("recetas"); // Popula solo el campo "nombre" de las recetas relacionadas
     return categorias;
 }
 
