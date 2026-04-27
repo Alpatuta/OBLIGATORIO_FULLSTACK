@@ -4,9 +4,9 @@ import {
     obtenerRecetaPorIdService,
     actualizarRecetaService,
     eliminarRecetaService,
-    obtenerRecetasCombinadasService
+    obtenerRecetasCombinadasService, generarRecetaIAService, adaptarRecetaIAService
 } from "../services/recetas.services.js";
-import {  generarYGuardarRecetaIAService, adaptarRecetaIAService} from "../services/ai.services.js";
+
 
 //ALTA
 
@@ -69,7 +69,7 @@ export const generarYGuardarRecetaIA = async (req, res) => {
 
     const { ingredientes, dificultad, categoria } = req.body;
 
-    const receta = await generarYGuardarRecetaIAService(
+    const receta = await generarRecetaIAService(
 
         ingredientes,
 

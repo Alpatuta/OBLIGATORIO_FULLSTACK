@@ -1,6 +1,7 @@
 import Receta from "../models/receta.model.js";
 import Usuario from "../models/usuario.model.js";
 import Categoria from "../models/categoria.model.js";
+import {generarYGuardarRecetaIAService,adaptarRecetaIAService} from "./ai.services.js"
 import { isValidObjectId } from "mongoose";
 import axios from "axios";
 
@@ -258,3 +259,15 @@ export const obtenerRecetasCombinadasService = async (query) => {
 
   return recetas.sort((a, b) => b.ingredientesMatch - a.ingredientesMatch);
 };
+
+export const generarRecetaIAService = async (ingredientes, dificultad, categoria, autor) => {
+  const recetaIA = await generarYGuardarRecetaIAService(ingredientes, dificultad, categoria, autor);
+
+  return recetaIA;
+}
+
+export const adaptarRecetaIAService = async (id, tipo, autor) => {
+  const recetaAdaptada = await adaptarRecetaIAService(id, tipo, autor);
+
+  return recetaAdaptada;
+}
