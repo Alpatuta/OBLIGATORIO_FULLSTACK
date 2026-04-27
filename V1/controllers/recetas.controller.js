@@ -4,7 +4,7 @@ import {
     obtenerRecetaPorIdService,
     actualizarRecetaService,
     eliminarRecetaService,
-    obtenerRecetasCombinadasService, generarRecetaIAService, adaptarRecetaIAService
+    obtenerRecetasCombinadasService, generarRecetaIAService, adaptarYGuardarRecetaIAService
 } from "../services/recetas.services.js";
 
 
@@ -97,7 +97,7 @@ export const adaptarRecetaIA = async (req, res) => {
 
     const { tipo } = req.body;
 
-    const nuevaReceta = await adaptarRecetaIAService(
+    const nuevaReceta = await adaptarYGuardarRecetaIAService(
         req.params.id,
         tipo,
         req.user.correo

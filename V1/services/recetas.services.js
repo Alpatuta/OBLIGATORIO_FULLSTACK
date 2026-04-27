@@ -266,7 +266,7 @@ export const generarRecetaIAService = async (ingredientes, dificultad, categoria
   return recetaIA;
 }
 
-export const adaptarRecetaIAService = async (id, tipo, autor) => {
+export const adaptarYGuardarRecetaIAService = async (id, tipo, autor) => {
   const recetaAdaptada = await adaptarRecetaIAService(id, tipo, autor);
 
   return recetaAdaptada;
