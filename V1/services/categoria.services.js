@@ -20,7 +20,7 @@ export const crearCategoriaService = async (categoriaData) => {
 //OBTENER CATEGORIAS
 
 export const obtenerCategoriasService = async () => {
-    const categorias = await Categoria.find().populate("recetas","titulo"); // Popula solo el campo "titulo" de las recetas relacionadas
+    const categorias = await Categoria.find().populate("recetas", "titulo"); // Popula solo el campo "titulo" de las recetas relacionadas
     return categorias;
 }
 
@@ -32,8 +32,12 @@ export const obtenerCategoriaPorIdService = async (id) => {
         error.status = 400;
         throw error;
     }
-    
-    const categoria = await Categoria.findById(id).populate("recetas", "nombre", "descripcion", "dificultad"); 
+
+    const categoria = await Categoria.findById(id).populate(
+        "recetas",
+        "titulo descripcion dificultad"
+    );
+
     if (!categoria) {
         const error = new Error("Categoría no encontrada");
         error.status = 404;
@@ -51,7 +55,7 @@ export const eliminarCategoriaService = async (id) => {
         error.status = 400;
         throw error;
     }
-    
+
     const categoriaEliminada = await Categoria.findByIdAndDelete(id);
     if (!categoriaEliminada) {
         const error = new Error("Categoría no encontrada");
