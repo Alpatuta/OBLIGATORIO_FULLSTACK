@@ -81,5 +81,4 @@ export const agregarIngredienteService = async (nuevoIngrediente) => {
     const ingredienteCreado = new Ingrediente(nuevoIngrediente);
     await ingredienteCreado.save();
     return ingredienteCreado;
-
 }
