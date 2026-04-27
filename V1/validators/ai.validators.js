@@ -1,11 +1,23 @@
 import joi from "joi";
 
-const objectIdRegex = /^[0-9a-fA-F]{24}$/; 
+const objectIdRegex = /^[0-9a-fA-F]{24}$/;
 
 export const generarYGuardarRecetaIASchema = joi.object({
-    ingredientes: joi.array().items(joi.string()).min(1).required(),
-    dificultad: joi.string().valid("Fácil", "Media", "Difícil").required(),
-    categoria: joi.string().pattern(objectIdRegex).required()
+    ingredientes: joi.array().items(joi.string()).min(1).required().messages({
+        "array.base": "Los ingredientes deben ser un arreglo",
+        "array.min": "Debe haber al menos un ingrediente",
+        "any.required": "Los ingredientes son obligatorios"
+    }),
+    dificultad: joi.string().valid("Fácil", "Media", "Difícil").required().messages({
+        "string.base": "La dificultad debe ser un texto",
+        "any.only": "La dificultad debe ser 'Fácil', 'Media' o 'Difícil'",
+        "any.required": "La dificultad es obligatoria"
+    }),
+    categoria: joi.string().pattern(objectIdRegex).required().messages({
+        "string.base": "La categoría debe ser un texto",
+        "string.pattern.base": "La categoría debe ser un ID válido de MongoDB",
+        "any.required": "La categoría es obligatoria"
+    })
 });
 
 
