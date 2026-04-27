@@ -2,6 +2,7 @@ import axios from "axios";
 import Receta from "../models/receta.model.js";
 import Usuario from "../models/usuario.model.js";
 import Categoria from "../models/categoria.model.js";
+
 const API_KEY = process.env.GEMINI_25_API_KEY;
 const MODEL = "gemini-2.5-flash";
 const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
@@ -9,6 +10,20 @@ const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODE
 const headers = {
   "Content-Type": "application/json",
   "x-goog-api-key": API_KEY,
+};
+
+const normalizarArrayDeStrings = (items) => {
+  if (!Array.isArray(items)) return [];
+
+  return items.map((item) => {
+    if (typeof item === "string") return item;
+
+    if (typeof item === "object" && item !== null) {
+      return item.name || item.nombre || item.ingredient || item.step || JSON.stringify(item);
+    }
+
+    return String(item);
+  });
 };
 
 // METODO PARA GENERAR Y GUARDAR RECETA CON IA
@@ -69,15 +84,11 @@ export const generarYGuardarRecetaIAService = async (
 
   const texto = response.data.candidates[0].content.parts[0].text;
 
-  // EXTRAER JSON DEL TEXTO
-
   const match = texto.match(/\{[\s\S]*\}/);
 
   if (!match) {
     const error = new Error("No se pudo extraer JSON de la respuesta de la IA");
-
     error.status = 500;
-
     throw error;
   }
 
@@ -87,9 +98,7 @@ export const generarYGuardarRecetaIAService = async (
     recetaIA = JSON.parse(match[0]);
   } catch {
     const error = new Error("Respuesta inválida de la IA");
-
     error.status = 500;
-
     throw error;
   }
 
@@ -99,12 +108,14 @@ export const generarYGuardarRecetaIAService = async (
     throw error;
   }
 
-  // GUARDADO EN DB
+  const ingredientesNormalizados = normalizarArrayDeStrings(recetaIA.ingredientes);
+  const pasosNormalizados = normalizarArrayDeStrings(recetaIA.pasos);
+
   const nuevaReceta = new Receta({
     titulo: recetaIA.titulo,
     descripcion: recetaIA.descripcion,
-    ingredientes: recetaIA.ingredientes,
-    pasos: recetaIA.pasos,
+    ingredientes: ingredientesNormalizados,
+    pasos: pasosNormalizados,
     autor,
     dificultad,
     categoria,
@@ -114,7 +125,6 @@ export const generarYGuardarRecetaIAService = async (
 
   await Categoria.findByIdAndUpdate(
     categoria,
-
     { $addToSet: { recetas: nuevaReceta._id } },
   );
 
@@ -192,12 +202,14 @@ export const adaptarRecetaIAService = async (id, tipo, autor) => {
     throw error;
   }
 
-  //  CREAR NUEVA RECETA en DB
+  const ingredientesNormalizados = normalizarArrayDeStrings(recetaIA.ingredientes);
+  const pasosNormalizados = normalizarArrayDeStrings(recetaIA.pasos);
+
   const nuevaReceta = new Receta({
     titulo: recetaIA.titulo + ` (${tipo})`,
     descripcion: recetaIA.descripcion,
-    ingredientes: recetaIA.ingredientes,
-    pasos: recetaIA.pasos,
+    ingredientes: ingredientesNormalizados,
+    pasos: pasosNormalizados,
     autor,
     dificultad: receta.dificultad,
     categoria: receta.categoria,
@@ -207,7 +219,6 @@ export const adaptarRecetaIAService = async (id, tipo, autor) => {
 
   await Categoria.findByIdAndUpdate(
     receta.categoria,
-
     { $addToSet: { recetas: nuevaReceta._id } },
   );
 
