@@ -21,6 +21,9 @@ const recetaSchema = new mongoose.Schema({
     required: true,
   },
   reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
+
+  //Para que se pueda guardar la imagen de la receta
+  imagen : { type: String },
 });
 
 export default mongoose.model("Receta", recetaSchema);
