@@ -71,8 +71,13 @@ export const generarYGuardarRecetaIAService = async (
       { headers },
     );
   } catch (e) {
-    const error = new Error("Error al consumir IA");
-    error.status = 500;
+    console.error("Gemini error status:", e.response?.status);
+    console.error("Gemini error data:", e.response?.data || e.message);
+
+    const error = new Error(
+      e.response?.data?.error?.message || "Error al consumir IA"
+    );
+    error.status = e.response?.status || 500;
     throw error;
   }
 
