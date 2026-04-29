@@ -31,4 +31,8 @@ export const registerSchema = joi.object({
         'string.email': 'El correo debe tener un formato válido',
         'any.required': 'El correo es obligatorio',
     }),
+    rol: joi.string().valid('admin', 'user').default('user').messages({
+        'any.only': 'El rol debe ser "admin" o "user"',
+        'any.default': 'El rol por defecto es "user"',
+    }),
 });
