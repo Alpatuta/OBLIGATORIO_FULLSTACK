@@ -39,11 +39,11 @@ export const registerSchema = joi.object({
 });
 
 export const loginSchema = joi.object({
-    email: joi.string().email({ tlds: { allow: false } }).required().messages({
+    correo: joi.string().email({ tlds: { allow: false } }).required().messages({
         "string.empty": "El correo electrónico es obligatorio",
         "string.email": "El correo electrónico no es válido"
     }),
-    password: joi.string().min(6).required().messages({
+    contrasenia: joi.string().min(6).required().messages({
         "string.empty": "La contraseña es obligatoria",
         "string.min": "La contraseña debe tener al menos 6 caracteres"
     })
