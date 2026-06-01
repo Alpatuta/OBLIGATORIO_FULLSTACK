@@ -35,4 +35,16 @@ export const registerSchema = joi.object({
         'any.only': 'El rol debe ser "admin" o "user"',
         'any.default': 'El rol por defecto es "user"',
     }),
+
+});
+
+export const loginSchema = joi.object({
+    email: joi.string().email({ tlds: { allow: false } }).required().messages({
+        "string.empty": "El correo electrónico es obligatorio",
+        "string.email": "El correo electrónico no es válido"
+    }),
+    password: joi.string().min(6).required().messages({
+        "string.empty": "La contraseña es obligatoria",
+        "string.min": "La contraseña debe tener al menos 6 caracteres"
+    })
 });
