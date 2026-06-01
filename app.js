@@ -15,7 +15,7 @@ const app = express();
 
 app.set('trust proxy', 1);
 
-app.options('*', cors());
+app.options('/*splat', cors());
 
 app.use(cors({
     origin: ['http://localhost:3000', 'http://localhost:5173', 'https://obligatorio-fullstack-six.vercel.app/'],
