@@ -18,7 +18,7 @@ app.set('trust proxy', 1);
 app.options('/*splat', cors());
 
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://localhost:5173', 'https://obligatorio-fullstack-six.vercel.app/'],
+    origin: ['http://localhost:3000', 'http://localhost:5173', 'https://obligatorio-fullstack-six.vercel.app'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
