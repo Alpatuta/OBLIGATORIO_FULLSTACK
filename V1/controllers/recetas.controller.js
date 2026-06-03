@@ -44,8 +44,12 @@ export const obtenerRecetaPorId = async (req, res) => {
 //ACTUALIZAR RECETA
 
 export const actualizarReceta = async (req, res) => {
+    const recetaData = { ...req.body };
 
-    const recetaActualizada = await actualizarRecetaService(req.params.id, req.body, req.user.correo);
+    if (req.file) {
+        recetaData.imagen = req.file.buffer;
+    }
+    const recetaActualizada = await actualizarRecetaService(req.params.id, recetaData, req.user.correo);
     res.status(200).json({ message: "Receta actualizada exitosamente", receta: recetaActualizada });
 
 };

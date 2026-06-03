@@ -77,9 +77,5 @@ export const actualizarRecetaSchema = joi.object({
         "string.base": "La categoría debe ser una cadena de texto",
         "string.pattern.base": "La categoría debe ser un ObjectId válido",
     }),
-    imagen: joi.string().uri().messages({
-        "string.base": "La imagen debe ser una cadena de texto",
-        "string.uri": "La imagen debe ser una URL válida",
-    }),
 }).min(1).options({ allowUnknown: false });
 

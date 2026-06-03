@@ -155,15 +155,14 @@ export const actualizarRecetaService = async (id, recetaData, autor) => {
   }
 
   // Si se envía una nueva imagen, subirla a Cloudinary y actualizar la URL
-  if (recetaData.imagen) {
+  if (recetaData.imagen && Buffer.isBuffer(recetaData.imagen)) {
     try {
       const resultado = await uploadBufferToCloudinary(
         cloudinary,
         recetaData.imagen,
         { folder: "ImgObligatorioFS/Recetas" }
       );
-      urlImagen = resultado.secure_url;
-      recetaData.imagen = urlImagen;
+      recetaData.imagen = resultado.secure_url;
     } catch (e) {
       const error = new Error("Error al subir la imagen a Cloudinary");
       error.status = 500;

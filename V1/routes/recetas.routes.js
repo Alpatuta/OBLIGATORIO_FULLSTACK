@@ -23,7 +23,7 @@ router.post("/:id/adaptar", validateBodyMiddleware(adaptarRecetaSchema), adaptar
 router.get("/", obtenerRecetas);
 router.get("/combinadas", obtenerRecetasCombinadas);
 router.get("/:id", obtenerRecetaPorId);
-router.patch("/:id", validateBodyMiddleware(actualizarRecetaSchema), actualizarReceta);
+router.patch("/:id", upload.single("imagen"), validateBodyMiddleware(actualizarRecetaSchema), actualizarReceta);
 router.delete("/:id", eliminarReceta);
 
 export default router;
