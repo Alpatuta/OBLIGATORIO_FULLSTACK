@@ -57,17 +57,16 @@ export const eliminarCategoriaService = async (id) => {
         throw error;
     }
 
+    if (categoriaEliminada.recetas && categoriaEliminada.recetas.length > 0) {
+        const error = new Error("No se puede eliminar la categoría porque tiene recetas asociadas");
+        error.status = 400;
+        throw error;
+    }
+
     const categoriaEliminada = await Categoria.findByIdAndDelete(id);
     if (!categoriaEliminada) {
         const error = new Error("Categoría no encontrada");
         error.status = 404;
-        throw error;
-    }
-
-
-    if (categoriaEliminada.recetas && categoriaEliminada.recetas.length > 0) {
-        const error = new Error("No se puede eliminar la categoría porque tiene recetas asociadas");
-        error.status = 400;
         throw error;
     }
 
