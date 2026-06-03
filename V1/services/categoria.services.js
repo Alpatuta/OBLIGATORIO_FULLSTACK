@@ -57,20 +57,21 @@ export const eliminarCategoriaService = async (id) => {
         throw error;
     }
 
-    if (categoriaEliminada.recetas && categoriaEliminada.recetas.length > 0) {
-        const error = new Error("No se puede eliminar la categoría porque tiene recetas asociadas");
-        error.status = 400;
-        throw error;
-    }
-
-    const categoriaEliminada = await Categoria.findByIdAndDelete(id);
-    if (!categoriaEliminada) {
+    const categoria = await Categoria.findById(id).populate("recetas");
+    if (!categoria) {
         const error = new Error("Categoría no encontrada");
         error.status = 404;
         throw error;
     }
 
-    return categoriaEliminada;
+    if (categoria.recetas && categoria.recetas.length > 0) {
+        const error = new Error("No se puede eliminar la categoría porque tiene recetas asociadas");
+        error.status = 400;
+        throw error;
+    }
+
+    await Categoria.findByIdAndDelete(id);
+    return categoria;
 }
 
 //ACTUALIZAR CATEGORIA
