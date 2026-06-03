@@ -5,6 +5,7 @@ import { generarYGuardarRecetaIAService, adaptarRecetaIAService } from "./ai.ser
 import { isValidObjectId } from "mongoose";
 import { uploadBufferToCloudinary } from "../utils/cloudinary.util.js";
 import axios from "axios";
+import cloudinary from "../config/cloudinary.js";
 
 const MEALDB_API_URL = "https://www.themealdb.com/api/json/v1/1";
 
@@ -158,7 +159,7 @@ export const actualizarRecetaService = async (id, recetaData, autor) => {
     try {
       const resultado = await uploadBufferToCloudinary(
         cloudinary,
-        imagenReceta,
+        recetaData.imagen,
         { folder: "ImgObligatorioFS/Recetas" }
       );
       urlImagen = resultado.secure_url;
