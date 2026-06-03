@@ -41,7 +41,7 @@ export const crearRecetaService = async (recetaData, autor) => {
       const resultado = await uploadBufferToCloudinary(
         cloudinary,
         imagenReceta,
-        { folder: "recetas" }
+        { folder: "ImgObligatorioFS/Recetas" }
       );
       urlImagen = resultado.secure_url;
       recetaData.imagen = urlImagen;
@@ -159,7 +159,7 @@ export const actualizarRecetaService = async (id, recetaData, autor) => {
       const resultado = await uploadBufferToCloudinary(
         cloudinary,
         imagenReceta,
-        { folder: "recetas" }
+        { folder: "ImgObligatorioFS/Recetas" }
       );
       urlImagen = resultado.secure_url;
       recetaData.imagen = urlImagen;
