@@ -19,7 +19,7 @@ const normalizarArrayDeStrings = (items) => {
     if (typeof item === "string") return item;
 
     if (typeof item === "object" && item !== null) {
-      return item.name || item.nombre || item.ingredient || item.step || JSON.stringify(item);
+      return item.name || item.nombre || item.ingredient || item.step || item.descripcion || item.description || JSON.stringify(item);
     }
 
     return String(item);
