@@ -26,6 +26,58 @@ const normalizarArrayDeStrings = (items) => {
   });
 };
 
+// Detecta si un texto está en inglés usando palabras frecuentes
+const detectarIngles = (texto) => {
+  const palabrasIngles = [
+    "the", "and", "with", "add", "heat", "cup", "tablespoon", "teaspoon",
+    "mix", "cook", "stir", "oven", "bake", "dice", "chop", "slice",
+    "pour", "place", "remove", "combine", "until", "over", "medium",
+    "skillet", "bowl", "pan", "minutes", "season", "pepper", "salt"
+  ];
+  const textoLower = texto.toLowerCase();
+  const coincidencias = palabrasIngles.filter((p) => textoLower.includes(p));
+  return coincidencias.length >= 3;
+};
+
+// Traduce al español si Gemini respondió en inglés
+const traducirAlEspanol = async (recetaIA) => {
+  const textoARevisar = `${recetaIA.titulo} ${recetaIA.descripcion}`;
+  if (!detectarIngles(textoARevisar)) return recetaIA;
+
+  const prompt = `
+    Translate the following recipe JSON to Spanish.
+    Keep the exact same JSON structure and keys.
+    Only translate the text values, do not translate the JSON keys.
+    Respond ONLY with valid JSON, no explanations.
+
+    ${JSON.stringify(recetaIA)}
+
+    {
+      "titulo": "",
+      "descripcion": "",
+      "ingredientes": [],
+      "pasos": []
+    }
+  `;
+
+  try {
+    const response = await axios.post(
+      ENDPOINT,
+      { contents: [{ parts: [{ text: prompt }] }] },
+      { headers }
+    );
+
+    const texto = response.data.candidates[0].content.parts[0].text;
+    const match = texto.match(/\{[\s\S]*\}/);
+    if (!match) return recetaIA;
+
+    return JSON.parse(match[0]);
+  } catch {
+    // Si falla la traducción, devuelve el original sin romper el flujo
+    return recetaIA;
+  }
+};
+
 // METODO PARA GENERAR Y GUARDAR RECETA CON IA
 export const generarYGuardarRecetaIAService = async (
   ingredientes,
@@ -47,10 +99,10 @@ export const generarYGuardarRecetaIAService = async (
   }
 
   const prompt = `
-    Generate a cooking recipe using these ingredients: ${ingredientes.join(", ")}.
-    Difficulty: ${dificultad}.
+    Generá una receta de cocina usando estos ingredientes: ${ingredientes.join(", ")}.
+    Dificultad: ${dificultad}.
 
-    IMPORTANT: Respond ONLY in valid JSON format and in ENGLISH.
+    IMPORTANTE: Respondé SOLO en formato JSON válido y en ESPAÑOL.
 
     {
       "titulo": "",
@@ -113,6 +165,8 @@ export const generarYGuardarRecetaIAService = async (
     throw error;
   }
 
+  recetaIA = await traducirAlEspanol(recetaIA);
+
   const ingredientesNormalizados = normalizarArrayDeStrings(recetaIA.ingredientes);
   const pasosNormalizados = normalizarArrayDeStrings(recetaIA.pasos);
 
@@ -154,12 +208,12 @@ export const adaptarRecetaIAService = async (id, tipo, autor) => {
   }
 
   const prompt = `
-    Convert this recipe into a ${tipo} version.
+    Convertí esta receta a una versión ${tipo}.
 
-    IMPORTANT:
-    - Respond ONLY with valid JSON
-    - No explanations
-    - In ENGLISH
+    IMPORTANTE:
+    - Respondé SOLO con JSON válido
+    - Sin explicaciones
+    - En ESPAÑOL
 
     ${JSON.stringify(receta)}
 
@@ -211,6 +265,8 @@ export const adaptarRecetaIAService = async (id, tipo, autor) => {
     error.status = 500;
     throw error;
   }
+
+  recetaIA = await traducirAlEspanol(recetaIA);
 
   const ingredientesNormalizados = normalizarArrayDeStrings(recetaIA.ingredientes);
   const pasosNormalizados = normalizarArrayDeStrings(recetaIA.pasos);
