@@ -3,6 +3,7 @@ import Usuario from "../models/usuario.model.js";
 import Categoria from "../models/categoria.model.js";
 import { generarYGuardarRecetaIAService, adaptarRecetaIAService } from "./ai.services.js"
 import { isValidObjectId } from "mongoose";
+import { uploadBufferToCloudinary } from "../utils/cloudinary.util.js";
 import axios from "axios";
 
 const MEALDB_API_URL = "https://www.themealdb.com/api/json/v1/1";
@@ -31,6 +32,26 @@ export const crearRecetaService = async (recetaData, autor) => {
     error.status = 400;
     throw error;
   }
+
+  const imagenReceta = recetaData.imagen; // Suponemos que la imagen viene como un buffer en recetaData
+  let urlImagen = null;
+
+  if (imagenReceta) {
+    try {
+      const resultado = await uploadBufferToCloudinary(
+        cloudinary,
+        imagenReceta,
+        { folder: "recetas" }
+      );
+      urlImagen = resultado.secure_url;
+      recetaData.imagen = urlImagen;
+    } catch (e) {
+      const error = new Error("Error al subir la imagen a Cloudinary");
+      error.status = 500;
+      throw error;
+    }
+  }
+
 
   const nuevaReceta = new Receta({ ...recetaData, autor });
   await nuevaReceta.save();
@@ -131,6 +152,24 @@ export const actualizarRecetaService = async (id, recetaData, autor) => {
       { $addToSet: { recetas: id } },
     );
   }
+
+  // Si se envía una nueva imagen, subirla a Cloudinary y actualizar la URL
+  if (recetaData.imagen) {
+    try {
+      const resultado = await uploadBufferToCloudinary(
+        cloudinary,
+        imagenReceta,
+        { folder: "recetas" }
+      );
+      urlImagen = resultado.secure_url;
+      recetaData.imagen = urlImagen;
+    } catch (e) {
+      const error = new Error("Error al subir la imagen a Cloudinary");
+      error.status = 500;
+      throw error;
+    }
+  }
+
   const recetaActualizada = await Receta.findByIdAndUpdate(id, recetaData, {
     new: true,
   });

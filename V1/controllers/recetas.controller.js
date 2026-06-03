@@ -11,8 +11,13 @@ import {
 //ALTA
 
 export const crearReceta = async (req, res) => {
+    const recetaData = { ...req.body };
 
-    const receta = await crearRecetaService(req.body, req.user.correo);
+    if (req.file) {
+        recetaData.imagen = req.file.buffer; // Guardamos el buffer de la imagen para subirlo a Cloudinary en el servicio
+    }
+
+    const receta = await crearRecetaService(recetaData, req.user.correo);
     res.status(201).json({ message: "Receta creada exitosamente", receta });
 
 };
