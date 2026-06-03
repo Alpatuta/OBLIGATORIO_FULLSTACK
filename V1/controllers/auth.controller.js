@@ -10,7 +10,8 @@ export const loginUsuario = async (req, res) => {
             idUsuario: usuarioLogueado._id,
             nombre: usuarioLogueado.nombre,
             correo: usuarioLogueado.correo,
-            rol: usuarioLogueado.rol
+            rol: usuarioLogueado.rol,
+            plan: usuarioLogueado.plan
         },
         process.env.SECRET_JWT,
         { expiresIn: "1h" }
@@ -28,7 +29,8 @@ export const registerUsuario = async (req, res) => {
             idUsuario: usuarioCreado._id,
             nombre: usuarioCreado.nombre,
             correo: usuarioCreado.correo,
-            rol: usuarioCreado.rol
+            rol: usuarioCreado.rol,
+            plan: usuarioCreado.plan
         },
         process.env.SECRET_JWT,
         { expiresIn: "1h" }
