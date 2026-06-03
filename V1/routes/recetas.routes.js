@@ -10,15 +10,16 @@ import {
     adaptarRecetaIA
 } from "../controllers/recetas.controller.js";
 import { validateBodyMiddleware } from "../middlewares/validateBody.middleware.js";
-import { crearRecetaSchema,actualizarRecetaSchema } from "../validators/recetas.validators.js";
+import { crearRecetaSchema, actualizarRecetaSchema } from "../validators/recetas.validators.js";
 import { generarYGuardarRecetaIASchema } from "../validators/ai.validators.js";
 import { adaptarRecetaSchema } from "../validators/ai.validators.js";
+import { upload } from "../middlewares/multer.middleware.js";
 
 const router = express.Router({ mergeParams: true });
 
-router.post("/",validateBodyMiddleware(crearRecetaSchema), crearReceta);
-router.post("/ia",validateBodyMiddleware(generarYGuardarRecetaIASchema),generarYGuardarRecetaIA);
-router.post("/:id/adaptar",validateBodyMiddleware(adaptarRecetaSchema),adaptarRecetaIA); 
+router.post("/", upload.single("imagen"), validateBodyMiddleware(crearRecetaSchema), crearReceta);
+router.post("/ia", validateBodyMiddleware(generarYGuardarRecetaIASchema), generarYGuardarRecetaIA);
+router.post("/:id/adaptar", validateBodyMiddleware(adaptarRecetaSchema), adaptarRecetaIA);
 router.get("/", obtenerRecetas);
 router.get("/combinadas", obtenerRecetasCombinadas);
 router.get("/:id", obtenerRecetaPorId);
