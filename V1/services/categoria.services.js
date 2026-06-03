@@ -44,12 +44,6 @@ export const obtenerCategoriaPorIdService = async (id) => {
         throw error;
     }
 
-    if (categoria.recetas.length > 0) {
-        const error = new Error("No se puede eliminar la categoría porque tiene recetas asociadas");
-        error.status = 400;
-        throw error;
-    }
-
     return categoria;
 
 }
@@ -69,6 +63,14 @@ export const eliminarCategoriaService = async (id) => {
         error.status = 404;
         throw error;
     }
+
+
+    if (categoriaEliminada.recetas && categoriaEliminada.recetas.length > 0) {
+        const error = new Error("No se puede eliminar la categoría porque tiene recetas asociadas");
+        error.status = 400;
+        throw error;
+    }
+
     return categoriaEliminada;
 }
 
