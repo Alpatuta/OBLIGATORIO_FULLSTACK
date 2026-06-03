@@ -2,14 +2,10 @@ import joi from "joi";
 
 const objectIdRegex = /^[0-9a-fA-F]{24}$/;
 
-const campoTextoArray = joi.array().items(
-    joi.string().trim().min(1).required().messages({
-        "string.base": "Cada elemento debe ser una cadena de texto",
-        "string.empty": "Los elementos no pueden estar vacíos",
-        "string.min": "Los elementos deben tener al menos 1 caracter",
-        "any.required": "Cada elemento es obligatorio",
-    })
-).min(1);
+const campoTextoArray = joi.alternatives([
+    joi.array().items(joi.string().trim().min(1)).min(1),
+    joi.string().trim().min(1)
+]).required();
 
 export const crearRecetaSchema = joi.object({
     titulo: joi.string().trim().min(3).max(150).required().messages({
