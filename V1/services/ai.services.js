@@ -176,6 +176,7 @@ export const generarYGuardarRecetaIAService = async (
     ingredientes: ingredientesNormalizados,
     pasos: pasosNormalizados,
     autor,
+    autorNombre: usuario.nombre,
     dificultad,
     categoria,
   });
@@ -193,6 +194,7 @@ export const generarYGuardarRecetaIAService = async (
 //METODO PARA MEJORAR RECETA EXISTENTE CON IA
 
 export const adaptarRecetaIAService = async (id, tipo, autor) => {
+  const usuarioAdaptar = await Usuario.findOne({ correo: autor });
   const receta = await Receta.findById(id);
 
   if (!receta) {
@@ -277,6 +279,7 @@ export const adaptarRecetaIAService = async (id, tipo, autor) => {
     ingredientes: ingredientesNormalizados,
     pasos: pasosNormalizados,
     autor,
+    autorNombre: usuarioAdaptar?.nombre,
     dificultad: receta.dificultad,
     categoria: receta.categoria,
   });

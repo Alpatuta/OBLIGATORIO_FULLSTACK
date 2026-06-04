@@ -54,7 +54,7 @@ export const crearRecetaService = async (recetaData, autor) => {
   }
 
 
-  const nuevaReceta = new Receta({ ...recetaData, autor });
+  const nuevaReceta = new Receta({ ...recetaData, autor, autorNombre: usuario.nombre });
   await nuevaReceta.save();
 
   await Categoria.findByIdAndUpdate(

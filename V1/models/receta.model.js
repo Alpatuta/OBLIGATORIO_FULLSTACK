@@ -8,6 +8,7 @@ const recetaSchema = new mongoose.Schema({
   ingredientes: [{ type: String, required: true }],
   pasos: [{ type: String, required: true }],
   autor: { type: String, required: true },
+  autorNombre: { type: String },
   fechaDeCreacion: { type: Date, default: Date.now },
   dificultad: {
     type: String,
