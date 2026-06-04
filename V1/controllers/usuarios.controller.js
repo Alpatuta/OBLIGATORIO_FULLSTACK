@@ -19,6 +19,6 @@ export const cambiarPlanUsuarioAdmin = async (req, res) => {
 
 export const obtenerUsuarios = async (req, res) => {
     const usuarios = await obtenerUsuariosService();
-    res.status(200).json({ usuarios });
+    res.status(200).json(usuarios);
 }
 
