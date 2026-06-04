@@ -98,6 +98,17 @@ export const generarYGuardarRecetaIAService = async (
     throw error;
   }
 
+  if(usuario.plan!=="premium"){
+
+    const cantidad= await Receta.countDocuments({ autor });
+    if(cantidad>=4){
+      const error = new Error("Límite de recetas alcanzado para el plan plus");
+      error.status = 400;
+      throw error;
+    }
+
+  }
+
   const prompt = `
     Generá una receta de cocina usando estos ingredientes: ${ingredientes.join(", ")}.
     Dificultad: ${dificultad}.
@@ -207,6 +218,17 @@ export const adaptarRecetaIAService = async (id, tipo, autor) => {
     const error = new Error("Debe indicar el tipo de adaptación");
     error.status = 400;
     throw error;
+  }
+
+  if(usuarioAdaptar.plan=="plus"){
+
+    const cantidad= await Receta.countDocuments({ autor });
+    if(cantidad>=4){
+      const error = new Error("Límite de recetas alcanzado para el plan plus");
+      error.status = 400;
+      throw error;
+    }
+
   }
 
   const prompt = `
