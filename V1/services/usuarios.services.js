@@ -19,3 +19,8 @@ export const cambiarPlanUsuarioService = async (correo) => {
     return usuario;
 }
 
+
+export const obtenerUsuariosService = async () => {
+    const usuarios = await Usuario.find({ rol: "user" }).select("nombre correo plan");
+    return usuarios;
+}
